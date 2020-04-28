@@ -1,7 +1,12 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 
 const app = express();
+
+/**
+ * Middleware
+ */
 
 app.use(express.json());
 app.use(
@@ -18,6 +23,11 @@ app.use(
     ].join(" ");
   })
 );
+app.use(cors());
+
+/**
+ * ID generator
+ */
 
 const getRandomId = () => {
   const MAX = 999999;
@@ -29,6 +39,10 @@ const getRandomId = () => {
   }
   return tempRandomInt;
 };
+
+/**
+ * DB
+ */
 
 let persons = [
   {
@@ -47,6 +61,10 @@ let persons = [
     id: 3,
   },
 ];
+
+/**
+ * API
+ */
 
 app.get("/", (req, res) => {
   res.send("<h1>Part 3</h1><div><a href='/api/persons'>/api/persons</a></div>");
@@ -101,13 +119,17 @@ app.post("/api/persons/", (req, res) => {
   res.json(person);
 });
 
+/**
+ * Port settings
+ */
+
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" });
 };
 
 app.use(unknownEndpoint);
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
